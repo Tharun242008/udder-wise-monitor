@@ -17,8 +17,9 @@ export const Route = createFileRoute("/health")({
       { property: "og:description", content: "Structured daily health observation records for each cow." },
     ],
   }),
-  component: HealthPage;
+  component: HealthPage,
 });
+
 
 const inputCls =
   "w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring";
