@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CowsRouteImport } from './routes/cows'
+import { Route as CowsCowIdRouteImport } from './routes/cows.$cowId'
+import { Route as MilkAddRouteImport } from './routes/milk.add'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +24,48 @@ const CowsRoute = CowsRouteImport.update({
   path: '/cows',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CowsCowIdRoute = CowsCowIdRouteImport.update({
+  id: '/$cowId',
+  path: '/$cowId',
+  getParentRoute: () => CowsRoute,
+} as any)
+const MilkAddRoute = MilkAddRouteImport.update({
+  id: '/milk/add',
+  path: '/milk/add',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/cows': typeof CowsRoute
+  '/cows': typeof CowsRouteWithChildren
+  '/cows/$cowId': typeof CowsCowIdRoute
+  '/milk/add': typeof MilkAddRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/cows': typeof CowsRoute
+  '/cows': typeof CowsRouteWithChildren
+  '/cows/$cowId': typeof CowsCowIdRoute
+  '/milk/add': typeof MilkAddRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/cows': typeof CowsRoute
+  '/cows': typeof CowsRouteWithChildren
+  '/cows/$cowId': typeof CowsCowIdRoute
+  '/milk/add': typeof MilkAddRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/cows'
+  fullPaths: '/' | '/cows' | '/cows/$cowId' | '/milk/add'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/cows'
-  id: '__root__' | '/' | '/cows'
+  to: '/' | '/cows' | '/cows/$cowId' | '/milk/add'
+  id: '__root__' | '/' | '/cows' | '/cows/$cowId' | '/milk/add'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  CowsRoute: typeof CowsRoute
+  CowsRoute: typeof CowsRouteWithChildren
+  MilkAddRoute: typeof MilkAddRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +84,37 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CowsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/cows/$cowId': {
+      id: '/cows/$cowId'
+      path: '/$cowId'
+      fullPath: '/cows/$cowId'
+      preLoaderRoute: typeof CowsCowIdRouteImport
+      parentRoute: typeof CowsRoute
+    }
+    '/milk/add': {
+      id: '/milk/add'
+      path: '/milk/add'
+      fullPath: '/milk/add'
+      preLoaderRoute: typeof MilkAddRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
+interface CowsRouteChildren {
+  CowsCowIdRoute: typeof CowsCowIdRoute
+}
+
+const CowsRouteChildren: CowsRouteChildren = {
+  CowsCowIdRoute: CowsCowIdRoute,
+}
+
+const CowsRouteWithChildren = CowsRoute._addFileChildren(CowsRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  CowsRoute: CowsRoute,
+  CowsRoute: CowsRouteWithChildren,
+  MilkAddRoute: MilkAddRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
