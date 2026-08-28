@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CowsRouteImport } from './routes/cows'
 import { Route as HealthRouteImport } from './routes/health'
+import { Route as InsightsRouteImport } from './routes/insights'
+import { Route as ScheduleRouteImport } from './routes/schedule'
 import { Route as CowsCowIdRouteImport } from './routes/cows.$cowId'
 import { Route as MilkAddRouteImport } from './routes/milk.add'
 import { Route as MilkHistoryRouteImport } from './routes/milk.history'
@@ -29,6 +31,16 @@ const CowsRoute = CowsRouteImport.update({
 const HealthRoute = HealthRouteImport.update({
   id: '/health',
   path: '/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InsightsRoute = InsightsRouteImport.update({
+  id: '/insights',
+  path: '/insights',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ScheduleRoute = ScheduleRouteImport.update({
+  id: '/schedule',
+  path: '/schedule',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CowsCowIdRoute = CowsCowIdRouteImport.update({
@@ -51,6 +63,8 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/cows': typeof CowsRouteWithChildren
   '/health': typeof HealthRoute
+  '/insights': typeof InsightsRoute
+  '/schedule': typeof ScheduleRoute
   '/cows/$cowId': typeof CowsCowIdRoute
   '/milk/add': typeof MilkAddRoute
   '/milk/history': typeof MilkHistoryRoute
@@ -59,6 +73,8 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/cows': typeof CowsRouteWithChildren
   '/health': typeof HealthRoute
+  '/insights': typeof InsightsRoute
+  '/schedule': typeof ScheduleRoute
   '/cows/$cowId': typeof CowsCowIdRoute
   '/milk/add': typeof MilkAddRoute
   '/milk/history': typeof MilkHistoryRoute
@@ -68,6 +84,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/cows': typeof CowsRouteWithChildren
   '/health': typeof HealthRoute
+  '/insights': typeof InsightsRoute
+  '/schedule': typeof ScheduleRoute
   '/cows/$cowId': typeof CowsCowIdRoute
   '/milk/add': typeof MilkAddRoute
   '/milk/history': typeof MilkHistoryRoute
@@ -75,14 +93,31 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/cows' | '/health' | '/cows/$cowId' | '/milk/add' | '/milk/history'
+    | '/'
+    | '/cows'
+    | '/health'
+    | '/insights'
+    | '/schedule'
+    | '/cows/$cowId'
+    | '/milk/add'
+    | '/milk/history'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/cows' | '/health' | '/cows/$cowId' | '/milk/add' | '/milk/history'
+  to:
+    | '/'
+    | '/cows'
+    | '/health'
+    | '/insights'
+    | '/schedule'
+    | '/cows/$cowId'
+    | '/milk/add'
+    | '/milk/history'
   id:
     | '__root__'
     | '/'
     | '/cows'
     | '/health'
+    | '/insights'
+    | '/schedule'
     | '/cows/$cowId'
     | '/milk/add'
     | '/milk/history'
@@ -92,6 +127,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CowsRoute: typeof CowsRouteWithChildren
   HealthRoute: typeof HealthRoute
+  InsightsRoute: typeof InsightsRoute
+  ScheduleRoute: typeof ScheduleRoute
   MilkAddRoute: typeof MilkAddRoute
   MilkHistoryRoute: typeof MilkHistoryRoute
 }
@@ -117,6 +154,20 @@ declare module '@tanstack/react-router' {
       path: '/health'
       fullPath: '/health'
       preLoaderRoute: typeof HealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/insights': {
+      id: '/insights'
+      path: '/insights'
+      fullPath: '/insights'
+      preLoaderRoute: typeof InsightsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/schedule': {
+      id: '/schedule'
+      path: '/schedule'
+      fullPath: '/schedule'
+      preLoaderRoute: typeof ScheduleRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cows/$cowId': {
@@ -157,6 +208,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CowsRoute: CowsRouteWithChildren,
   HealthRoute: HealthRoute,
+  InsightsRoute: InsightsRoute,
+  ScheduleRoute: ScheduleRoute,
   MilkAddRoute: MilkAddRoute,
   MilkHistoryRoute: MilkHistoryRoute,
 }
