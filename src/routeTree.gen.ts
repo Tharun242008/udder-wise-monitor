@@ -11,8 +11,10 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CowsRouteImport } from './routes/cows'
+import { Route as HealthRouteImport } from './routes/health'
 import { Route as CowsCowIdRouteImport } from './routes/cows.$cowId'
 import { Route as MilkAddRouteImport } from './routes/milk.add'
+import { Route as MilkHistoryRouteImport } from './routes/milk.history'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,6 +24,11 @@ const IndexRoute = IndexRouteImport.update({
 const CowsRoute = CowsRouteImport.update({
   id: '/cows',
   path: '/cows',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HealthRoute = HealthRouteImport.update({
+  id: '/health',
+  path: '/health',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CowsCowIdRoute = CowsCowIdRouteImport.update({
@@ -34,38 +41,59 @@ const MilkAddRoute = MilkAddRouteImport.update({
   path: '/milk/add',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MilkHistoryRoute = MilkHistoryRouteImport.update({
+  id: '/milk/history',
+  path: '/milk/history',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/cows': typeof CowsRouteWithChildren
+  '/health': typeof HealthRoute
   '/cows/$cowId': typeof CowsCowIdRoute
   '/milk/add': typeof MilkAddRoute
+  '/milk/history': typeof MilkHistoryRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/cows': typeof CowsRouteWithChildren
+  '/health': typeof HealthRoute
   '/cows/$cowId': typeof CowsCowIdRoute
   '/milk/add': typeof MilkAddRoute
+  '/milk/history': typeof MilkHistoryRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/cows': typeof CowsRouteWithChildren
+  '/health': typeof HealthRoute
   '/cows/$cowId': typeof CowsCowIdRoute
   '/milk/add': typeof MilkAddRoute
+  '/milk/history': typeof MilkHistoryRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/cows' | '/cows/$cowId' | '/milk/add'
+  fullPaths:
+    '/' | '/cows' | '/health' | '/cows/$cowId' | '/milk/add' | '/milk/history'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/cows' | '/cows/$cowId' | '/milk/add'
-  id: '__root__' | '/' | '/cows' | '/cows/$cowId' | '/milk/add'
+  to: '/' | '/cows' | '/health' | '/cows/$cowId' | '/milk/add' | '/milk/history'
+  id:
+    | '__root__'
+    | '/'
+    | '/cows'
+    | '/health'
+    | '/cows/$cowId'
+    | '/milk/add'
+    | '/milk/history'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CowsRoute: typeof CowsRouteWithChildren
+  HealthRoute: typeof HealthRoute
   MilkAddRoute: typeof MilkAddRoute
+  MilkHistoryRoute: typeof MilkHistoryRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -84,6 +112,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CowsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/health': {
+      id: '/health'
+      path: '/health'
+      fullPath: '/health'
+      preLoaderRoute: typeof HealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/cows/$cowId': {
       id: '/cows/$cowId'
       path: '/$cowId'
@@ -96,6 +131,13 @@ declare module '@tanstack/react-router' {
       path: '/milk/add'
       fullPath: '/milk/add'
       preLoaderRoute: typeof MilkAddRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/milk/history': {
+      id: '/milk/history'
+      path: '/milk/history'
+      fullPath: '/milk/history'
+      preLoaderRoute: typeof MilkHistoryRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -114,7 +156,9 @@ const CowsRouteWithChildren = CowsRoute._addFileChildren(CowsRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CowsRoute: CowsRouteWithChildren,
+  HealthRoute: HealthRoute,
   MilkAddRoute: MilkAddRoute,
+  MilkHistoryRoute: MilkHistoryRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
