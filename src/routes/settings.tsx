@@ -3,6 +3,10 @@ import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { AppShell, PageHeader } from "@/components/dairy/AppShell";
 import { EmptyState, Field, Panel, StatCard } from "@/components/dairy/ui";
+const fail = (m: string): void => {
+  toast.error(m);
+};
+
 import { useDairy } from "@/lib/dairy/store";
 import { toCSV, total } from "@/lib/dairy/analytics";
 
@@ -47,7 +51,7 @@ function SettingsPage() {
     download(`smart-dairy-monitor-${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify(data, null, 2), "application/json");
 
   const exportCSV = () => {
-    if (!data.milkRecords.length) return toast.error("No milk records to export yet.");
+    if (!data.milkRecords.length) return fail("No milk records to export yet.");
     const rows = data.milkRecords
       .slice()
       .sort((a, b) => a.date.localeCompare(b.date))
@@ -68,7 +72,7 @@ function SettingsPage() {
   const onImport = async (file: File) => {
     const text = await file.text();
     const res = importData(text);
-    if (!res.ok) return toast.error(res.error!);
+    if (!res.ok) return fail(res.error!);
     toast.success("Farm records imported. Existing data was replaced.");
   };
 

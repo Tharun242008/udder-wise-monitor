@@ -4,6 +4,10 @@ import { toast } from "sonner";
 import { Pencil, Trash2 } from "lucide-react";
 import { AppShell, DemoBanner, PageHeader } from "@/components/dairy/AppShell";
 import { ComparisonBadge, EmptyState, Field, Panel, Tag } from "@/components/dairy/ui";
+const fail = (m: string): void => {
+  toast.error(m);
+};
+
 import { useDairy } from "@/lib/dairy/store";
 import { compareCow, prettyDate, todayISO } from "@/lib/dairy/analytics";
 import type { Cow } from "@/lib/dairy/types";
@@ -51,12 +55,12 @@ function CowsPage() {
       dateAdded: form.dateAdded || todayISO(),
       notes: form.notes.trim(),
     };
-    if (!payload.cowId) return toast.error("Cow ID is required (example: C001).");
-    if (!payload.name) return toast.error("Cow name is required.");
+    if (!payload.cowId) return fail("Cow ID is required (example: C001).");
+    if (!payload.name) return fail("Cow name is required.");
     if (form.age === "" || Number.isNaN(payload.age) || payload.age < 0)
-      return toast.error("Age must be a number of 0 or more.");
+      return fail("Age must be a number of 0 or more.");
     const res = editing ? updateCow(editing.id, payload) : addCow(payload);
-    if (!res.ok) return toast.error(res.error!);
+    if (!res.ok) return fail(res.error!);
     toast.success(editing ? `${payload.cowId} updated.` : `${payload.cowId} added.`);
     setForm({ ...blank });
     setEditing(null);

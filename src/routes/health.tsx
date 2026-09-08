@@ -4,6 +4,10 @@ import { toast } from "sonner";
 import { Trash2 } from "lucide-react";
 import { AppShell, DemoBanner, PageHeader } from "@/components/dairy/AppShell";
 import { EmptyState, Field, Panel, Tag } from "@/components/dairy/ui";
+const fail = (m: string): void => {
+  toast.error(m);
+};
+
 import { useDairy } from "@/lib/dairy/store";
 import { prettyDate, todayISO } from "@/lib/dairy/analytics";
 import type { HealthRecord } from "@/lib/dairy/types";
@@ -48,11 +52,11 @@ function HealthPage() {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.cowId) return toast.error("Select a Cow ID.");
-    if (!form.date) return toast.error("Date is required.");
-    if (form.date > todayISO()) return toast.error("Date cannot be in the future.");
+    if (!form.cowId) return fail("Select a Cow ID.");
+    if (!form.date) return fail("Date is required.");
+    if (form.date > todayISO()) return fail("Date cannot be in the future.");
     const res = addHealthRecord({ ...form, observation: form.observation.trim(), notes: form.notes.trim() });
-    if (!res.ok) return toast.error(res.error!);
+    if (!res.ok) return fail(res.error!);
     toast.success(`Observation recorded for ${form.cowId}.`);
     setForm({ ...form, observation: "", notes: "" });
   };

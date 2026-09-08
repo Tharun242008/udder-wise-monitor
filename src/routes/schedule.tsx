@@ -4,6 +4,10 @@ import { toast } from "sonner";
 import { Trash2 } from "lucide-react";
 import { AppShell, DemoBanner, PageHeader } from "@/components/dairy/AppShell";
 import { EmptyState, Field, Panel, ScheduleBadge, StatCard, Tag } from "@/components/dairy/ui";
+const fail = (m: string): void => {
+  toast.error(m);
+};
+
 import { useDairy } from "@/lib/dairy/store";
 import { addDaysISO, allSchedules, prettyDate, todayISO } from "@/lib/dairy/analytics";
 
@@ -49,14 +53,14 @@ function SchedulePage() {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.cowId) return toast.error("Select a Cow ID.");
-    if (!form.treatment.trim()) return toast.error("Injection/treatment name is required.");
-    if (!form.givenDate) return toast.error("Given date is required.");
+    if (!form.cowId) return fail("Select a Cow ID.");
+    if (!form.treatment.trim()) return fail("Injection/treatment name is required.");
+    if (!form.givenDate) return fail("Given date is required.");
     if (mode === "interval" && !(Number(form.intervalDays) > 0))
-      return toast.error("Interval must be greater than 0 days.");
-    if (mode === "date" && !form.nextDueDate) return toast.error("Enter the next due date.");
+      return fail("Interval must be greater than 0 days.");
+    if (mode === "date" && !form.nextDueDate) return fail("Enter the next due date.");
     if (mode === "date" && form.nextDueDate < form.givenDate)
-      return toast.error("Next due date cannot be earlier than the given date.");
+      return fail("Next due date cannot be earlier than the given date.");
 
     const res = addInjection({
       cowId: form.cowId,
@@ -66,7 +70,7 @@ function SchedulePage() {
       nextDueDate: mode === "date" ? form.nextDueDate : null,
       notes: form.notes.trim(),
     });
-    if (!res.ok) return toast.error(res.error!);
+    if (!res.ok) return fail(res.error!);
     toast.success(`Schedule saved for ${form.cowId}.`);
     setForm({ ...form, treatment: "", notes: "" });
   };

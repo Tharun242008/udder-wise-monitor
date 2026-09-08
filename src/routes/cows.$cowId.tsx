@@ -72,7 +72,7 @@ function CowProfile() {
     .sort((a, b) => (a.daysRemaining ?? 9999) - (b.daysRemaining ?? 9999));
 
   const chartData = recs.map((r, i) => {
-    const prev = i > 0 ? total(recs[i - 1]) : total(r);
+    const prev = i > 0 ? total(recs[i - 1]!) : total(r);
     const pct = prev > 0 ? ((total(r) - prev) / prev) * 100 : 0;
     return { date: r.date, litres: Number(total(r).toFixed(2)), feed: r.feedKg, pct: Number(pct.toFixed(1)) };
   });
