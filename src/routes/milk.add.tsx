@@ -3,12 +3,12 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { AppShell, DemoBanner, PageHeader } from "@/components/dairy/AppShell";
 import { ComparisonBadge, EmptyState, Field, Panel, StatCard } from "@/components/dairy/ui";
+import { useDairy } from "@/lib/dairy/store";
+import { compareCow, fmt, prettyDate, todayISO } from "@/lib/dairy/analytics";
+
 const fail = (m: string): void => {
   toast.error(m);
 };
-
-import { useDairy } from "@/lib/dairy/store";
-import { compareCow, fmt, prettyDate, todayISO } from "@/lib/dairy/analytics";
 
 export const Route = createFileRoute("/milk/add")({
   head: () => ({

@@ -4,13 +4,13 @@ import { toast } from "sonner";
 import { Pencil, Trash2 } from "lucide-react";
 import { AppShell, DemoBanner, PageHeader } from "@/components/dairy/AppShell";
 import { ComparisonBadge, EmptyState, Field, Panel, Tag } from "@/components/dairy/ui";
-const fail = (m: string): void => {
-  toast.error(m);
-};
-
 import { useDairy } from "@/lib/dairy/store";
 import { compareCow, prettyDate, todayISO } from "@/lib/dairy/analytics";
 import type { Cow } from "@/lib/dairy/types";
+
+const fail = (m: string): void => {
+  toast.error(m);
+};
 
 export const Route = createFileRoute("/cows")({
   head: () => ({

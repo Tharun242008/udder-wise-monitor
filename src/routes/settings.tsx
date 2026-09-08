@@ -3,12 +3,12 @@ import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { AppShell, PageHeader } from "@/components/dairy/AppShell";
 import { EmptyState, Field, Panel, StatCard } from "@/components/dairy/ui";
+import { useDairy } from "@/lib/dairy/store";
+import { toCSV, total } from "@/lib/dairy/analytics";
+
 const fail = (m: string): void => {
   toast.error(m);
 };
-
-import { useDairy } from "@/lib/dairy/store";
-import { toCSV, total } from "@/lib/dairy/analytics";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({

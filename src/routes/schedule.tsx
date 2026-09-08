@@ -4,12 +4,12 @@ import { toast } from "sonner";
 import { Trash2 } from "lucide-react";
 import { AppShell, DemoBanner, PageHeader } from "@/components/dairy/AppShell";
 import { EmptyState, Field, Panel, ScheduleBadge, StatCard, Tag } from "@/components/dairy/ui";
+import { useDairy } from "@/lib/dairy/store";
+import { addDaysISO, allSchedules, prettyDate, todayISO } from "@/lib/dairy/analytics";
+
 const fail = (m: string): void => {
   toast.error(m);
 };
-
-import { useDairy } from "@/lib/dairy/store";
-import { addDaysISO, allSchedules, prettyDate, todayISO } from "@/lib/dairy/analytics";
 
 export const Route = createFileRoute("/schedule")({
   head: () => ({
