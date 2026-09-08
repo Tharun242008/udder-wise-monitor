@@ -253,7 +253,7 @@ export function isolationForest(data: DairyData, nTrees = 100): { points: Anomal
   for (const cow of data.cows) {
     const recs = cowRecords(data, cow.cowId);
     recs.forEach((r, i) => {
-      const prev = i > 0 ? total(recs[i - 1]) : total(r);
+      const prev = i > 0 ? total(recs[i - 1]!) : total(r);
       rows.push({
         cowId: cow.cowId,
         date: r.date,
