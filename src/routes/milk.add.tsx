@@ -6,6 +6,10 @@ import { ComparisonBadge, EmptyState, Field, Panel, StatCard } from "@/component
 import { useDairy } from "@/lib/dairy/store";
 import { compareCow, fmt, prettyDate, todayISO } from "@/lib/dairy/analytics";
 
+const fail = (m: string): void => {
+  toast.error(m);
+};
+
 export const Route = createFileRoute("/milk/add")({
   head: () => ({
     meta: [
@@ -21,7 +25,6 @@ export const Route = createFileRoute("/milk/add")({
 const inputCls =
   "w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring";
 
-export default function noop() {}
 
 function AddMilk() {
   const { data, addMilkRecord } = useDairy();
@@ -42,12 +45,12 @@ function AddMilk() {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.cowId) return toast.error("Select a Cow ID. Add the cow first if it is missing.");
-    if (!form.date) return toast.error("Date is required.");
-    if (form.morning === "" && form.evening === "") return toast.error("Enter at least one milking quantity.");
-    if (morning < 0 || evening < 0) return toast.error("Milk cannot be negative.");
-    if (Number(form.feedKg || 0) < 0) return toast.error("Feed cannot be negative.");
-    if (form.date > todayISO()) return toast.error("Date cannot be in the future.");
+    if (!form.cowId) return fail("Select a Cow ID. Add the cow first if it is missing.");
+    if (!form.date) return fail("Date is required.");
+    if (form.morning === "" && form.evening === "") return fail("Enter at least one milking quantity.");
+    if (morning < 0 || evening < 0) return fail("Milk cannot be negative.");
+    if (Number(form.feedKg || 0) < 0) return fail("Feed cannot be negative.");
+    if (form.date > todayISO()) return fail("Date cannot be in the future.");
 
     const res = addMilkRecord({
       cowId: form.cowId,
@@ -58,7 +61,7 @@ function AddMilk() {
       healthObservation: form.healthObservation,
       notes: form.notes.trim(),
     });
-    if (!res.ok) return toast.error(res.error!);
+    if (!res.ok) return fail(res.error!);
     toast.success(`Saved ${fmt(totalMilk, 2)} L for ${form.cowId} on ${prettyDate(form.date)}.`);
     setLastSaved(form.cowId);
     setForm({ ...form, morning: "", evening: "", notes: "" });

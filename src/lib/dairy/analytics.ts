@@ -6,7 +6,7 @@ export const fmt = (n: number, d = 1) => Number.isFinite(n) ? n.toFixed(d) : "-"
 
 export function parseDate(d: string): Date {
   const [y, m, day] = d.split("-").map(Number);
-  return new Date(y, (m ?? 1) - 1, day ?? 1);
+  return new Date(y ?? 1970, (m ?? 1) - 1, day ?? 1);
 }
 
 export function todayISO(): string {
@@ -75,12 +75,12 @@ export function compareCow(data: DairyData, cowId: string): Comparison {
   };
   if (recs.length < 2) {
     if (recs.length === 1) {
-      base.current = total(recs[0]);
-      base.currentDate = recs[0].date;
+      base.current = total(recs[0]!);
+      base.currentDate = recs[0]!.date;
     }
     return base;
   }
-  const latest = recs[recs.length - 1];
+  const latest = recs[recs.length - 1]!;
   const window = Math.min(Math.max(settings.baselineWindow, 3), 7);
   const prior = recs.slice(Math.max(0, recs.length - 1 - window), recs.length - 1);
   const baseline = prior.reduce((s, r) => s + total(r), 0) / prior.length;
@@ -168,7 +168,7 @@ export function dailyTotals(data: DairyData): { date: string; litres: number; fe
 
 export function latestDateWithRecords(data: DairyData): string | null {
   const dates = data.milkRecords.map((r) => r.date).sort();
-  return dates.length ? dates[dates.length - 1] : null;
+  return dates.length ? (dates[dates.length - 1] ?? null) : null;
 }
 
 export function todayTotals(data: DairyData) {
@@ -194,9 +194,9 @@ function buildTree(points: number[][], depth: number, maxDepth: number, rng: () 
   if (depth >= maxDepth || points.length <= 1) {
     return { size: points.length, depth };
   }
-  const dims = points[0].length;
+  const dims = points[0]!.length;
   const feature = Math.floor(rng() * dims);
-  const values = points.map((p) => p[feature]);
+  const values = points.map((p) => p[feature] ?? 0);
   const min = Math.min(...values);
   const max = Math.max(...values);
   if (min === max) return { size: points.length, depth };
@@ -205,8 +205,8 @@ function buildTree(points: number[][], depth: number, maxDepth: number, rng: () 
     depth,
     feature,
     split,
-    left: buildTree(points.filter((p) => p[feature] < split), depth + 1, maxDepth, rng),
-    right: buildTree(points.filter((p) => p[feature] >= split), depth + 1, maxDepth, rng),
+    left: buildTree(points.filter((p) => (p[feature] ?? 0) < split), depth + 1, maxDepth, rng),
+    right: buildTree(points.filter((p) => (p[feature] ?? 0) >= split), depth + 1, maxDepth, rng),
   };
 }
 
@@ -219,7 +219,7 @@ function pathLength(tree: Tree, point: number[], depth = 0): number {
   if (tree.feature === undefined || !tree.left || !tree.right) {
     return depth + c(tree.size ?? 1);
   }
-  return point[tree.feature] < tree.split! ? pathLength(tree.left, point, depth + 1) : pathLength(tree.right, point, depth + 1);
+  return (point[tree.feature] ?? 0) < tree.split! ? pathLength(tree.left, point, depth + 1) : pathLength(tree.right, point, depth + 1);
 }
 
 function mulberry32(seed: number) {
@@ -253,7 +253,7 @@ export function isolationForest(data: DairyData, nTrees = 100): { points: Anomal
   for (const cow of data.cows) {
     const recs = cowRecords(data, cow.cowId);
     recs.forEach((r, i) => {
-      const prev = i > 0 ? total(recs[i - 1]) : total(r);
+      const prev = i > 0 ? total(recs[i - 1]!) : total(r);
       rows.push({
         cowId: cow.cowId,
         date: r.date,
@@ -274,7 +274,7 @@ export function isolationForest(data: DairyData, nTrees = 100): { points: Anomal
   const trees: Tree[] = [];
   for (let t = 0; t < nTrees; t++) {
     const sample: number[][] = [];
-    for (let i = 0; i < sampleSize; i++) sample.push(points[Math.floor(rng() * points.length)]);
+    for (let i = 0; i < sampleSize; i++) sample.push(points[Math.floor(rng() * points.length)]!);
     trees.push(buildTree(sample, 0, maxDepth, rng));
   }
   const cn = c(sampleSize);
@@ -285,8 +285,8 @@ export function isolationForest(data: DairyData, nTrees = 100): { points: Anomal
   const sorted = [...scores].sort((a, b) => b - a);
   const cutoff = sorted[Math.max(0, Math.floor(sorted.length * 0.08) - 1)] ?? 1;
   rows.forEach((r, i) => {
-    r.score = Number(scores[i].toFixed(3));
-    r.isAnomaly = scores[i] >= cutoff;
+    r.score = Number((scores[i] ?? 0).toFixed(3));
+    r.isAnomaly = (scores[i] ?? 0) >= cutoff;
   });
   return { points: rows, enoughData: true };
 }
@@ -307,8 +307,8 @@ export function buildInsights(data: DairyData): Insight[] {
     const factors: string[] = [];
 
     if (recs.length >= 2) {
-      const last = recs[recs.length - 1];
-      const prev = recs[recs.length - 2];
+      const last = recs[recs.length - 1]!;
+      const prev = recs[recs.length - 2]!;
       if (Math.abs(last.feedKg - prev.feedKg) >= 0.5) {
         factors.push(
           `Feed quantity changed from ${fmt(prev.feedKg)} kg to ${fmt(last.feedKg)} kg on the most recent record.`,
@@ -370,7 +370,7 @@ export function buildInsights(data: DairyData): Insight[] {
 
 export function toCSV(rows: Record<string, unknown>[]): string {
   if (!rows.length) return "";
-  const keys = Object.keys(rows[0]);
+  const keys = Object.keys(rows[0]!);
   const esc = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
   return [keys.join(","), ...rows.map((r) => keys.map((k) => esc(r[k])).join(","))].join("\n");
 }

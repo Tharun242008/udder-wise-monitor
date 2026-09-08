@@ -26,7 +26,7 @@ export function generateDemoData(): DairyData {
     cowId: `C${String(i + 1).padStart(3, "0")}`,
     name,
     age: 3 + Math.floor(r() * 6),
-    breed: BREEDS[i % BREEDS.length],
+    breed: BREEDS[i % BREEDS.length]!,
     dateAdded: addDaysISO(today, -(120 + i * 5)),
     notes: "DEMO DATA — replace with actual farm records.",
     isDemo: true,

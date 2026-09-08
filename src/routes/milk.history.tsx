@@ -58,7 +58,7 @@ function MilkHistory() {
     if (!cowId) return [];
     const recs = cowRecords(data, cowId).filter((r) => r.date >= from && r.date <= to);
     return recs.map((r, i) => {
-      const prev = i > 0 ? total(recs[i - 1]) : total(r);
+      const prev = i > 0 ? total(recs[i - 1]!) : total(r);
       return {
         date: r.date,
         litres: Number(total(r).toFixed(2)),
