@@ -10,10 +10,12 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AlertsRouteImport } from './routes/alerts'
 import { Route as CowsRouteImport } from './routes/cows'
 import { Route as HealthRouteImport } from './routes/health'
 import { Route as InsightsRouteImport } from './routes/insights'
 import { Route as ScheduleRouteImport } from './routes/schedule'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as CowsCowIdRouteImport } from './routes/cows.$cowId'
 import { Route as MilkAddRouteImport } from './routes/milk.add'
 import { Route as MilkHistoryRouteImport } from './routes/milk.history'
@@ -21,6 +23,11 @@ import { Route as MilkHistoryRouteImport } from './routes/milk.history'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AlertsRoute = AlertsRouteImport.update({
+  id: '/alerts',
+  path: '/alerts',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CowsRoute = CowsRouteImport.update({
@@ -43,6 +50,11 @@ const ScheduleRoute = ScheduleRouteImport.update({
   path: '/schedule',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CowsCowIdRoute = CowsCowIdRouteImport.update({
   id: '/$cowId',
   path: '/$cowId',
@@ -61,20 +73,24 @@ const MilkHistoryRoute = MilkHistoryRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/alerts': typeof AlertsRoute
   '/cows': typeof CowsRouteWithChildren
   '/health': typeof HealthRoute
   '/insights': typeof InsightsRoute
   '/schedule': typeof ScheduleRoute
+  '/settings': typeof SettingsRoute
   '/cows/$cowId': typeof CowsCowIdRoute
   '/milk/add': typeof MilkAddRoute
   '/milk/history': typeof MilkHistoryRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/alerts': typeof AlertsRoute
   '/cows': typeof CowsRouteWithChildren
   '/health': typeof HealthRoute
   '/insights': typeof InsightsRoute
   '/schedule': typeof ScheduleRoute
+  '/settings': typeof SettingsRoute
   '/cows/$cowId': typeof CowsCowIdRoute
   '/milk/add': typeof MilkAddRoute
   '/milk/history': typeof MilkHistoryRoute
@@ -82,10 +98,12 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/alerts': typeof AlertsRoute
   '/cows': typeof CowsRouteWithChildren
   '/health': typeof HealthRoute
   '/insights': typeof InsightsRoute
   '/schedule': typeof ScheduleRoute
+  '/settings': typeof SettingsRoute
   '/cows/$cowId': typeof CowsCowIdRoute
   '/milk/add': typeof MilkAddRoute
   '/milk/history': typeof MilkHistoryRoute
@@ -94,30 +112,36 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/alerts'
     | '/cows'
     | '/health'
     | '/insights'
     | '/schedule'
+    | '/settings'
     | '/cows/$cowId'
     | '/milk/add'
     | '/milk/history'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/alerts'
     | '/cows'
     | '/health'
     | '/insights'
     | '/schedule'
+    | '/settings'
     | '/cows/$cowId'
     | '/milk/add'
     | '/milk/history'
   id:
     | '__root__'
     | '/'
+    | '/alerts'
     | '/cows'
     | '/health'
     | '/insights'
     | '/schedule'
+    | '/settings'
     | '/cows/$cowId'
     | '/milk/add'
     | '/milk/history'
@@ -125,10 +149,12 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AlertsRoute: typeof AlertsRoute
   CowsRoute: typeof CowsRouteWithChildren
   HealthRoute: typeof HealthRoute
   InsightsRoute: typeof InsightsRoute
   ScheduleRoute: typeof ScheduleRoute
+  SettingsRoute: typeof SettingsRoute
   MilkAddRoute: typeof MilkAddRoute
   MilkHistoryRoute: typeof MilkHistoryRoute
 }
@@ -140,6 +166,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/alerts': {
+      id: '/alerts'
+      path: '/alerts'
+      fullPath: '/alerts'
+      preLoaderRoute: typeof AlertsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cows': {
@@ -168,6 +201,13 @@ declare module '@tanstack/react-router' {
       path: '/schedule'
       fullPath: '/schedule'
       preLoaderRoute: typeof ScheduleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cows/$cowId': {
@@ -206,10 +246,12 @@ const CowsRouteWithChildren = CowsRoute._addFileChildren(CowsRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AlertsRoute: AlertsRoute,
   CowsRoute: CowsRouteWithChildren,
   HealthRoute: HealthRoute,
   InsightsRoute: InsightsRoute,
   ScheduleRoute: ScheduleRoute,
+  SettingsRoute: SettingsRoute,
   MilkAddRoute: MilkAddRoute,
   MilkHistoryRoute: MilkHistoryRoute,
 }
